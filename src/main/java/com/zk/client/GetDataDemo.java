@@ -9,13 +9,11 @@ import org.I0Itec.zkclient.ZkClient;
 public class GetDataDemo {
 
     public static void main(String[] args) throws InterruptedException {
-        ZkClient client = new ZkClient("10.211.55.5", 2181);
         String path = "/zk-client";
+        ZkClient client = new ZkClient("10.211.55.5", 2181);
         client.createEphemeral(path, "123");
-        System.out.println(client.readData(path).toString());
 
-        client.subscribeDataChanges(path, new IZkDataListener(){
-
+        client.subscribeDataChanges(path, new IZkDataListener(){ //节点内容变化监听事件
             @Override
             public void handleDataChange(String dataPath, Object data) throws Exception {
                 System.out.println(dataPath + " changed: " + data);
@@ -28,8 +26,10 @@ public class GetDataDemo {
         });
 
         System.out.println(client.readData(path).toString());
-        client.writeData(path, "456");
+        client.writeData(path, "456"); //节点变化触发事件
+        System.out.println(client.readData(path).toString());
         Thread.sleep(1000);
+
         client.delete(path);
         Thread.sleep(Integer.MAX_VALUE);
     }

@@ -21,12 +21,10 @@ public class DistributeLock implements Lock {
 	private static final String LOCK_NODE = "/lock";
 
 	private ZkClient client = new ZkClient(ZK_IP_PORT);
-
 	private CountDownLatch cdl = null;
 
-	// 实现阻塞式的加锁
 	@Override
-	public void lock() {
+	public void lock() { // 实现阻塞式的加锁
 		if (tryLock()) {
 			return;
 		}
@@ -34,14 +32,11 @@ public class DistributeLock implements Lock {
 		lock();
 	}
 
-	// 阻塞时的实现
-	private void waitForLock() {
-		// 给节点加监听
-		IZkDataListener listener = new IZkDataListener() {
+	private void waitForLock() { // 阻塞时的实现
+		IZkDataListener listener = new IZkDataListener() { // 给节点加监听
 			@Override
 			public void handleDataDeleted(String dataPath) throws Exception {
-				logger.info("-------get data delete event---------------");
-				if (cdl != null) {
+				if (cdl != null) { //监听到删除节点（释放锁）事件
 					cdl.countDown();
 				}
 			}
@@ -64,9 +59,9 @@ public class DistributeLock implements Lock {
 		client.unsubscribeDataChanges(LOCK_NODE, listener);
 	}
 
-	// 实现非阻塞式的加锁
+
 	@Override
-	public boolean tryLock() {
+	public boolean tryLock() { // 实现非阻塞式的加锁
 		try {
 			client.createPersistent(LOCK_NODE);
 			return true;
@@ -76,11 +71,9 @@ public class DistributeLock implements Lock {
 	}
 
 	@Override
-	public void unlock() {
+	public void unlock() { // 释放锁
 		client.delete(LOCK_NODE);
 	}
-
-	// -------------------------------
 
 	@Override
 	public boolean tryLock(long time, TimeUnit unit) throws InterruptedException {

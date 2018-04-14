@@ -35,22 +35,23 @@ public class ZKChildrenDemo implements Watcher {
 
 		zk.create("/zk-test/c2", "789".getBytes(), Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL);
 		String path3 = zk.create("/zk-test/c3", "789".getBytes(), Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL);
-		System.out.println(path3);
+		System.out.println("打印节点路径： " + path3);
 
 		Thread.sleep(Integer.MAX_VALUE);
 	}
 
 	@Override
 	public void process(WatchedEvent event) {
-		if (KeeperState.SyncConnected == event.getState())
+		if (KeeperState.SyncConnected == event.getState()){
 			if (EventType.None == event.getType() && null == event.getPath()) {
-				System.out.println("Zk connected");
+				System.out.println("ZK已连接");
 				cdl.countDown();
 			} else if (event.getType() == EventType.NodeChildrenChanged) {
 				try {
-					System.out.println("Child: " + zk.getChildren(event.getPath(), true));
+					System.out.println("节点： " + zk.getChildren(event.getPath(), true));
 				} catch (Exception e) {
 				}
 			}
+		}
 	}
 }

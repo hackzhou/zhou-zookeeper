@@ -23,12 +23,13 @@ public class NodeCacheDemo {
 		nc.getListenable().addListener(new NodeCacheListener() {
 			@Override
 			public void nodeChanged() throws Exception {
-				System.out.println("update--current data: " + new String(nc.getCurrentData().getData()));
+				System.out.println("更新当前节点内容： " + new String(nc.getCurrentData().getData()));
 			}
 		});
 		
 		client.setData().forPath(path, "test123".getBytes());
 		Thread.sleep(1000);
+
 		client.delete().deletingChildrenIfNeeded().forPath(path);
 		Thread.sleep(5000);
 		nc.close();

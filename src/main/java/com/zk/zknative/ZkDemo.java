@@ -19,13 +19,13 @@ public class ZkDemo implements Watcher {
         try {
             cdl.await();
         } catch (Exception e) {
-            System.out.println("ZK Session established.");
+            System.out.println(e.getMessage());
         }
     }
 
     @Override
     public void process(WatchedEvent event) {
-        System.out.println("Receive watched event:" + event);
+        System.out.println("监听节点事件： " + event);
         if (Event.KeeperState.SyncConnected == event.getState()) {
             cdl.countDown();
         }

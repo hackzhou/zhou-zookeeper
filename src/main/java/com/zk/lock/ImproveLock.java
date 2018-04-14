@@ -23,14 +23,12 @@ public class ImproveLock implements Lock {
 	private static final String LOCK_PATH = "/LOCK";
 
 	private ZkClient client = new ZkClient(ZOOKEEPER_IP_PORT, 1000, 1000, new SerializableSerializer());
-
 	private CountDownLatch cdl;
 
 	private String beforePath;// 当前请求的节点前一个节点
 	private String currentPath;// 当前请求的节点
 
-	// 判断有没有LOCK目录，没有则创建
-	public ImproveLock() {
+	public ImproveLock() { // 判断有没有LOCK目录，没有则创建
 		if (!this.client.exists(LOCK_PATH)) {
 			this.client.createPersistent(LOCK_PATH);
 		}
